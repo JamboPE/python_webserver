@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>QKD Error Correction</title>
+    </head>
+    <body>
+        <h1>Quantum Key Distrobuition Cascade Error Correction</h1>
+        <p>Enter Alice and Bob's keys to return a corrected key, the number of parity bits, the number of errors, the Shannon limit and the number of itterations used.</p>
+        <form method="POST">
+            <label for="alice_string">Alice's Key</label>
+            <input name="alice_string">
+            <br>
+            <label for="bob_string">Bob's Key</label>
+            <input name="bob_string">
+            <br>
+            <input type="submit">
+        </form>
+        <hr>
+        <h3>Keys:</h3>
+        <p>
+            Alice's Key: {{alice_bits}}<br>
+            Bob's Key: {{bob_bits}}
+        </p>
+        <hr>
+        <h3>Corrected Key:</h3>
+            <p>{{corrected_string}}</p>
+        <h3>Parity Bits:</h3>
+            <p>{{no_parity}}</p>
+        <h3>Number of errors between keys:</h3>
+            <p>{{no_errors}}</p>
+        <h3>Shannon Limit of correction:</h3>
+            <p>{{shannon_limit}}</p>
+        <h3>Number of Cascade itterations:</h3>
+            <p>{{no_itterations}}</p>
+    </body>
+</html>
