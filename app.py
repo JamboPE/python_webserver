@@ -8,11 +8,15 @@ def index():
 
 @app.route('/', methods=['POST'])
 def form():
-    print(request.form)
-    if "alice_string" in request.form and "bob_string" in request.form:
-        print("form entry")
-        alice_bits = request.form['alice_string']
-        bob_bits = request.form['bob_string']
-        return render_template('form return.html',alice_bits=alice_bits,bob_bits=bob_bits,corrected_string="corrected_string",no_parity="no_parity",no_errors="no_errors",shannon_limit="shannon_limit",no_itterations="no_itterations")
-    else:
-        return ("<h1>ERROR</h1>")
+    alice_bits = request.form['alice_string']
+    bob_bits = request.form['bob_string']
+    for character in alice_bits:
+        if character != '0' and character != '1':
+            return render_template('form error.html', error="You must enter a binary string!")
+    for character in bob_bits:
+        if character != '0' and character != '1':
+            return render_template('form error.html', error="You must enter a binary string!")
+    if len(alice_bits) != len(bob_bits):
+        return render_template('form error.html', error="The two keys must be the same length!")
+    if alice_bits == alice_bits:
+        return render_template('form return.html',alice_bits=alice_bits,bob_bits="  "+str(bob_bits),corrected_string="corrected_string",no_parity="no_parity",no_errors="no_errors",shannon_limit="shannon_limit",no_itterations="no_itterations")

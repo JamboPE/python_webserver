@@ -12,6 +12,9 @@
         <title>QKD Error Correction</title>
     </head>
     <body>
+        <div style="margin-bottom: 0.5cm;">
+            <a href="/" class="btn btn-primary" role="button"> &lt Back</a>
+        </div>
         <div>
             <h1>Quantum Key Distrobuition Cascade Error Correction</h1>
             <p>Enter Alice and Bob's keys to return a corrected key, the number of parity bits, the number of errors, the Shannon limit and the number of itterations used.</p>
@@ -20,7 +23,7 @@
             <h3>Keys:</h3>
             <p>
                 Alice's Key: {{alice_bits}}<br>
-                Bob's Key: {{bob_bits}}
+                Bob's Key: &nbsp;{{bob_bits}}
             </p>
         </div>
         <div><hr>
@@ -34,6 +37,9 @@
                 <p>{{shannon_limit}}</p>
             <h3>Number of Cascade itterations:</h3>
                 <p>{{no_itterations}}</p>
+        </div>
+        <div>
+            <a href="/" class="btn btn-primary" role="button" style="margin-top: 0.5cm;"> &lt Back</a>
         </div>
     </body>
 </html>
