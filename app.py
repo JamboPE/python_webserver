@@ -18,7 +18,6 @@ def form():
         except:
             dark_mode = False
         if dark_mode == True:
-            print("fuck off")
             return render_template('form return.html',alice_bits=alice_bits,bob_bits=bob_bits,corrected_string="corrected_string",no_parity="no_parity",no_errors="no_errors",shannon_limit="shannon_limit",no_itterations="no_itterations", background_color="rgb(80, 80, 80)", text_color="white")
         else:
             return render_template('form return.html',alice_bits=alice_bits,bob_bits=bob_bits,corrected_string="corrected_string",no_parity="no_parity",no_errors="no_errors",shannon_limit="shannon_limit",no_itterations="no_itterations", background_color="", text_color="")
