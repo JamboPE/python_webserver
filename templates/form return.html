@@ -26,6 +26,17 @@
                 Bob's Key: &nbsp;{{bob_bits}}
             </p>
         </div>
+        <div>
+            <table class="table table-bordered">
+                {%for row in tbl%}
+                   <tr>
+                      {%for col in row%}
+                        <td>{{col}}</td>
+                      {%endfor%}
+                   </tr>
+                {%endfor%}
+              </table>
+        </div>
         <div><hr>
             <h3>Corrected Key:</h3>
                 <p>{{corrected_string}}</p>
