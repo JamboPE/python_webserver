@@ -67,4 +67,4 @@ def form():
         script_output_lines_table = []
         for line in script_output_lines_app:
             script_output_lines_table.append(line.split(','))
-        return render_template('form return.html',alice_bits=alice_bits,bob_bits="  "+str(bob_bits),corrected_string=str(alice_bits),no_parity=script_split[2],no_errors=script_split[3],shannon_limit=script_split[4],no_itterations=script_split[5],tbl=script_output_lines_table)#tbl=zip(*script_output_lines))
+        return render_template('form return.html',alice_bits=alice_bits,bob_bits="  "+str(bob_bits),corrected_string=str(alice_bits),no_parity=script_split[2],no_errors=script_split[3],shannon_limit=script_split[4],no_itterations=script_split[5],tbl=script_output_lines_table)

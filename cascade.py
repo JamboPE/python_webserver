@@ -1,6 +1,5 @@
 import math
 import random
-from tabulate import tabulate
 import sys
 
 def string_to_array(string): # Used for user display purposes to convert each character in a string to entries in an array
@@ -9,23 +8,25 @@ def string_to_array(string): # Used for user display purposes to convert each ch
         array.append(i) # append each character to the array
     return array
 
-bob_bits = string_to_array(sys.argv[1])
-alice_bits = string_to_array(sys.argv[2])
-no_bits =  len(bob_bits)
-no_errors = 0
-error_array = []
-if bob_bits == alice_bits:
-    for line in bob_bits:
-        error_array.append(" ")
-    error_rate = 0
-else:
-    for i in range(0,len(bob_bits)):
-        if bob_bits[i] != alice_bits[i]:
-            no_errors += 1
-            error_array.append("X")
-        else:
+def process_input_data():
+    global alice_bits, bob_bits, no_bits, no_errors, error_array, error_rate
+    bob_bits = string_to_array(sys.argv[1])
+    alice_bits = string_to_array(sys.argv[2])
+    no_bits =  len(bob_bits)
+    no_errors = 0
+    error_array = []
+    if bob_bits == alice_bits:
+        for line in bob_bits:
             error_array.append(" ")
-    error_rate = no_errors/no_bits
+        error_rate = 0
+    else:
+        for i in range(0,len(bob_bits)):
+            if bob_bits[i] != alice_bits[i]:
+                no_errors += 1
+                error_array.append("X")
+            else:
+                error_array.append(" ")
+        error_rate = no_errors/no_bits
 
 def array_to_string(array): # Used for user display purposes to convert each entry in an array to characters in a string
     string=""
@@ -124,7 +125,6 @@ def produce_neat_array(array, bounds, person):
     return neat_array
 
 def h_func(p):
-    #h = -1 * p * math.log2(p) - (1-p) * math.log2(1-p) # Shannon entropy
     if p != 0:
         h = (-1 * p * math.log2(p)) - ((1-p) * math.log2(1-p)) # Shannon entropy
     else:
@@ -150,17 +150,17 @@ def split_into_subblocks(string):
         bit += 1
     return subblocks
 
-alice_parity, bob_parity = parity_sum(alice_bits), parity_sum(bob_bits) # Calculate the parity of Alice's and Bob's bits
-if alice_parity == bob_parity: # If the parity of Alice's and Bob's bits are the same, do not use the cascade method
-    ##print("Parity of Alice's bits: "+str(alice_parity)+"\nParity of Bob's bits: "+str(bob_parity)+"\nParity is the same, no cascade method required")
-    pass
-else:
-    wrong_bit=cascade(alice_bits,bob_bits) # Otherwise, use the cascade method to find the error
+def check_parity(alice_bits,bob_bits):
+    global alice_parity, bob_parity
+    alice_parity, bob_parity = parity_sum(alice_bits), parity_sum(bob_bits) # Calculate the parity of Alice's and Bob's bits
+    if alice_parity == bob_parity: # If the parity of Alice's and Bob's bits are the same, do not use the cascade method
+        pass
+    else:
+        wrong_bit=cascade(alice_bits,bob_bits) # Otherwise, use the cascade method to find the error
+        print(wrong_bit)
+        print("^ Wrong bit")
 
-# alice = alice string, bob = bob string
 def show_table(alice,a_parity,bob,b_parity):
-    ##print("\033[1m"+ "\033[4m" + "Error Correction - Cascade Protocol" + "\033[0m" + "\033[0m") # bold and underline table title
-    # Add label to each array for tabulationIn QKD, Alice encodes a classical bit onto the polarization or phase of a photon and sends this photon to Bob. After repeating this step k times, Alice and Bob share two k-bit strings, and the crossover probability p of BSC is supposed as known. In public discussion, parity pair yk is transmitted via an authenticated classical channel. Therefore, we can obtain the following expression: 
     alice.insert(0,'Alice|s Key')
     alice.append(' Parity Value')
     alice.append(a_parity)
@@ -171,21 +171,23 @@ def show_table(alice,a_parity,bob,b_parity):
     error_array.append(' Total Errors ')
     error_array.append(no_errors)
     data = [alice,bob,error_array]
-    #for i in range(0,len(split_arrays)):
-    #    data.append(split_arrays2[i])
-    #    data.append(split_arrays[i])
+    for i in range(0,len(split_arrays)):
+        data.append(split_arrays2[i])
+        data.append(split_arrays[i])
     ##print(tabulate(data, tablefmt="simple_grid")) # Print table
     # Remove labels from each array so they can be used for further calculations
-    print(data)
+    #print(data)
+    for line in data:
+        print(line)
     for array in data:
         if array == alice_bits or array == bob_bits or array == error_array:
             array.pop(0)
             array.pop(-1)
             array.pop(-1)
-show_table(alice_bits,alice_parity,bob_bits,bob_parity)
 
-##print("Error rate: "+str(no_errors/no_bits*100)+"%") # Print error rate
-##print("Parity bits:", len(split_arrays)*2) # Print number of parity bits
+process_input_data()
+check_parity(alice_bits,bob_bits)
+show_table(alice_bits,alice_parity,bob_bits,bob_parity)
 QBER = error_rate # Calculate QBER
 shannon_limit = h_func(QBER) # Calculate Shannon limit
 print(alice_bits)
@@ -193,6 +195,6 @@ print(len(split_arrays)*2) # Print number of parity bits
 print(no_errors)
 print(shannon_limit)
 print("No of itterations")
-
+print("Omega = "+str(0.73/(error_rate)))
 # ^This is the Shannon limit for the cascade protocol - Most ideal case - ideal percentage of bits that would need to be given up as parity bits to correct the error
 # Need to impliment a ratio (higher than 1) of the percentage of bits my cascade gives up commpared to the Shannon limit
