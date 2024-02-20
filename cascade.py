@@ -81,9 +81,6 @@ def split_array(array1, array2): # Used to split two arrays into two halves
     else:
         return "Error"
 
-
-bounds=[]
-split_arrays=[]
 def cascade(correct_array, incorrect_array):
     global split_arrays
     split_arrays=[]
@@ -152,9 +149,6 @@ def split_into_subblocks(string):
             subblock += 1        
         bit += 1
     return subblocks
-
-##print(split_into_subblocks(bob_bits))
-##print(split_into_subblocks(alice_bits))
 
 alice_parity, bob_parity = parity_sum(alice_bits), parity_sum(bob_bits) # Calculate the parity of Alice's and Bob's bits
 if alice_parity == bob_parity: # If the parity of Alice's and Bob's bits are the same, do not use the cascade method
