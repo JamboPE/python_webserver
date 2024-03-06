@@ -8,10 +8,9 @@ def string_to_array(string): # Used for user display purposes to convert each ch
         array.append(i) # append each character to the array
     return array
 
-def process_input_data():
-    global alice_bits, bob_bits, no_bits, no_errors, error_array, error_rate
-    bob_bits = string_to_array(sys.argv[1])
-    alice_bits = string_to_array(sys.argv[2])
+def process_input_data(alice_bits, bob_bits):
+    #bob_bits = string_to_array(sys.argv[1])
+    #alice_bits = string_to_array(sys.argv[2])
     no_bits =  len(bob_bits)
     no_errors = 0
     error_array = []
@@ -27,6 +26,11 @@ def process_input_data():
             else:
                 error_array.append(" ")
         error_rate = no_errors/no_bits
+    if error_rate != 0:
+        omega = 0.73/error_rate
+    else:
+        omega = "N/A, there are no errors in the strings"
+    return [no_bits, no_errors, error_array, error_rate, omega]
 
 def array_to_string(array): # Used for user display purposes to convert each entry in an array to characters in a string
     string=""
@@ -83,11 +87,8 @@ def split_array(array1, array2): # Used to split two arrays into two halves
         return "Error"
 
 def cascade(correct_array, incorrect_array):
-    global split_arrays
     split_arrays=[]
-    global split_arrays2
     split_arrays2=[]
-    global bounds
     bounds=[]
     while len(correct_array) != 1:
         both_arrays = split_array(correct_array, incorrect_array)
@@ -101,14 +102,15 @@ def cascade(correct_array, incorrect_array):
             return "Error"
         split_arrays.append(produce_neat_array(incorrect_array, bounds, "Bob"))
         split_arrays2.append(produce_neat_array(correct_array, bounds, "Alice"))
-    return(incorrect_array)
+    return [split_arrays, split_arrays2]
 
 def produce_neat_array(array, bounds, person):
     if person == "Alice":
         neat_array = ["Alice"]
     if person == "Bob":
         neat_array = ["Bob"]
-    length = no_bits
+    length = len(array)
+    no_bits = len(array)
     for i in bounds:
         if i == "up":
             length = length - (length//2)
@@ -128,18 +130,17 @@ def h_func(p):
     if p != 0:
         h = (-1 * p * math.log2(p)) - ((1-p) * math.log2(1-p)) # Shannon entropy
     else:
-        h = "N/A"
+        h = 0
     return h
 
-
-def split_into_subblocks(string):
-    substring_size = math.ceil(0.73/(no_errors/no_bits))
-    ##print("Substring size: "+str(substring_size))
-    no_subblock = math.ceil(no_bits / substring_size)
+###################################################################################
+def split_into_subblocks(string,omega):
+    substring_size = omega
+    no_subblock = math.ceil(string / substring_size)
     subblock = 0
     bit = 0
     subblocks=[]
-    for i in range(0,len(bob_bits)):
+    for i in range(0,len(string)):
         if subblock == no_subblock and bit == 0:
                 subblocks.append(string[i:])
         elif bit == 0 and subblock != no_subblock:
@@ -149,18 +150,18 @@ def split_into_subblocks(string):
             subblock += 1        
         bit += 1
     return subblocks
+###################################################################################
 
 def check_parity(alice_bits,bob_bits):
-    global alice_parity, bob_parity
     alice_parity, bob_parity = parity_sum(alice_bits), parity_sum(bob_bits) # Calculate the parity of Alice's and Bob's bits
     if alice_parity == bob_parity: # If the parity of Alice's and Bob's bits are the same, do not use the cascade method
         pass
+        split_arrays_array = [[False],[False]]
     else:
-        wrong_bit=cascade(alice_bits,bob_bits) # Otherwise, use the cascade method to find the error
-        print(wrong_bit)
-        print("^ Wrong bit")
+        split_arrays_array=cascade(alice_bits,bob_bits) # Otherwise, use the cascade method to find the error
+    return [alice_parity, bob_parity, split_arrays_array[0], split_arrays_array[1]]
 
-def show_table(alice,a_parity,bob,b_parity):
+def show_table(alice,a_parity,bob,b_parity,error_array,no_errors,split_arrays,split_arrays2):
     alice.insert(0,'Alice|s Key')
     alice.append(' Parity Value')
     alice.append(a_parity)
@@ -172,29 +173,26 @@ def show_table(alice,a_parity,bob,b_parity):
     error_array.append(no_errors)
     data = [alice,bob,error_array]
     for i in range(0,len(split_arrays)):
-        data.append(split_arrays2[i])
-        data.append(split_arrays[i])
-    ##print(tabulate(data, tablefmt="simple_grid")) # Print table
-    # Remove labels from each array so they can be used for further calculations
-    #print(data)
+        #diff = len(error_array)-len(split_arrays[i])
+        #print(diff)
+        #if diff > 0:
+        #    split_arrays[i].pop(0)
+        #    split_arrays2[i].pop(0)
+        #    for j in range(0,diff):
+        #        split_arrays[i].insert(0," ")
+        #        split_arrays2[i].insert(0," ")
+        #    split_arrays[i].insert(0,"Bob|s Key")
+        #    split_arrays2[i].insert(0,"Alice|s Key")
+        if split_arrays[0] != False or split_arrays2[0] != False:
+            data.append(split_arrays2[i])
+            data.append(split_arrays[i])
     for line in data:
         print(line)
-    for array in data:
-        if array == alice_bits or array == bob_bits or array == error_array:
-            array.pop(0)
-            array.pop(-1)
-            array.pop(-1)
+    return data
 
-process_input_data()
-check_parity(alice_bits,bob_bits)
-show_table(alice_bits,alice_parity,bob_bits,bob_parity)
-QBER = error_rate # Calculate QBER
-shannon_limit = h_func(QBER) # Calculate Shannon limit
-print(alice_bits)
-print(len(split_arrays)*2) # Print number of parity bits
-print(no_errors)
-print(shannon_limit)
-print("No of itterations")
-print("Omega = "+str(0.73/(error_rate)))
+#check_parity(["1","0","1"],["1","0","0"])
+#show_table(["1","0","1"],"0",["1","0","0"],"1",[" "," ","X"],"1",[['Bob', ' ', '0', ' ', ' ']],[['Alice', ' ', '1', ' ', ' ']])
+
+
 # ^This is the Shannon limit for the cascade protocol - Most ideal case - ideal percentage of bits that would need to be given up as parity bits to correct the error
 # Need to impliment a ratio (higher than 1) of the percentage of bits my cascade gives up commpared to the Shannon limit
