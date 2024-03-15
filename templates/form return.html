@@ -38,26 +38,41 @@
               </table>
         </div>
         <div><hr>
-            <h3>Corrected Key:</h3>
-                <p>{{corrected_string}}</p>
-            <h3>Key Length:</h3>
-                <p>{{string_length}}</p>
-            <h3>'Wrong' Approach - Number of Parity Bits:</h3>
-                <p>{{no_parity}}</p>
-            <h3>'Naive' Approach - Number of Parity Bits:</h3>
-                <p>{{naive_parity}}</p>
-            <h3>'Optimal' Approach - Number of Parity Bits:</h3>
-                <p>{{optimal_parity}}</p>
-            <h3>Number of errors between keys:</h3>
-                <p>{{no_errors}}</p>
-            <h3>Shannon Limit of correction:</h3>
-                <p>{{shannon_limit}}</p>
-            <h3>Ratio of Percetange of Bits Leaked Compare with the Shannon Limit:</h3>
-                <p>{{ratio_shannon}}</p>
-            <h3>Number of Cascade iterations:</h3>
-                <p>{{no_itterations}}</p>
-            <h3>Subblock size (ω):</h3>
-                <p>{{omega}}</p>
+            <table>
+                <tr>
+                    <th><h1>Error Correction Infomation</h1></th>
+                    <th><h1>Classical Communication Channel</h1></th>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;">
+                        <h3>Corrected Key:</h3>
+                            <p>{{corrected_string}}</p>
+                        <h3>Key Length:</h3>
+                            <p>{{string_length}}</p>
+                        <h3>'Wrong' Approach - Number of Parity Bits:</h3>
+                            <p>{{no_parity}}</p>
+                        <h3>'Naive' Approach - Number of Parity Bits:</h3>
+                            <p>{{naive_parity}}</p>
+                        <h3>'Optimal' Approach - Number of Parity Bits:</h3>
+                            <p>{{optimal_parity}}</p>
+                        <h3>Number of errors between keys:</h3>
+                            <p>{{no_errors}}</p>
+                        <h3>Shannon Limit of correction:</h3>
+                            <p>{{shannon_limit}}</p>
+                        <h3>Ratio of Percetange of Bits Leaked Compare with the Shannon Limit:</h3>
+                            <p>{{ratio_shannon}}</p>
+                        <h3>Number of Cascade iterations:</h3>
+                            <p>{{no_itterations}}</p>
+                        <h3>Subblock size (ω):</h3>
+                            <p>{{omega}}</p>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <p>
+                            classical_communication
+                        </p>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div>
             <a href="/" class="btn btn-primary" role="button" style="margin-top: 0.5cm;"> &lt Back</a>
