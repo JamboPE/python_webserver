@@ -80,9 +80,9 @@ def split_array(array1, array2): # Used to split two arrays into two halves
     if len(up_array1) != len(up_array2) or len(low_array1) != len(low_array2) or parity_sum(low_array1) == parity_sum(low_array2) and parity_sum(up_array1) == parity_sum(up_array2):
         return "split_array() Error: The lengths of the arrays are not equal or the parity sums of the arrays are equal"
     elif parity_sum(low_array1) != parity_sum(low_array2) and parity_sum(up_array1) == parity_sum(up_array2):
-        return [low_array1, low_array2, "low"]
+        return [low_array1, low_array2, "low",len(up_array1)]
     elif parity_sum(low_array1) == parity_sum(low_array2) and parity_sum(up_array1) != parity_sum(up_array2):
-        return [up_array1, up_array2, "up"]
+        return [up_array1, up_array2, "up",len(low_array1)]
     else:
         return "Error"
 
@@ -90,41 +90,56 @@ def cascade(correct_array, incorrect_array):
     split_arrays=[]
     split_arrays2=[]
     bounds=[]
+    alice_array = []
+    bob_array = []
+    no_bits = len(correct_array)
+    size_of_other_array = []
     while len(correct_array) != 1:
         both_arrays = split_array(correct_array, incorrect_array)
         correct_array = both_arrays[0]
         incorrect_array = both_arrays[1]
+        size_of_other_array.append(both_arrays[3])
         if both_arrays[2] == "low":
             bounds.append("low")
         elif both_arrays[2] == "up":
             bounds.append("up")
         else:
             return "Error"
-        split_arrays.append(produce_neat_array(incorrect_array, bounds, "Bob"))
-        split_arrays2.append(produce_neat_array(correct_array, bounds, "Alice"))
-    return [split_arrays, split_arrays2]
+        alice_array.append(correct_array)
+        bob_array.append(incorrect_array)
+    final_array = add_spaces(alice_array, bob_array, bounds,size_of_other_array)
+    return [final_array[0],final_array[1]]
 
-def produce_neat_array(array, bounds, person):
-    if person == "Alice":
-        neat_array = ["Alice"]
-    if person == "Bob":
-        neat_array = ["Bob"]
-    length = len(array)
-    no_bits = len(array)
-    for i in bounds:
-        if i == "up":
-            length = length - (length//2)
-            for j in range(0,length):
-                neat_array.append(" ")
-        elif i == "low":
-            length = length - (length//2)
-    for i in array:
-        neat_array.append(i)
-    for i in range(0,no_bits-len(neat_array)):
-        neat_array.append(" ")
-    neat_array.append(" ")
-    neat_array.append(" ")
-    return neat_array
+def add_spaces(alice_array, bob_array,bounds,size_of_other_array):
+    total_front_spaces = 0
+    total_back_spaces = 0
+    for i in range(0,len(alice_array)):
+        if bounds[i] == "low":
+            total_back_spaces += size_of_other_array[i]
+        elif bounds[i] == "up":
+            total_front_spaces += size_of_other_array[i]
+        for j in range (0,total_back_spaces):
+                alice_array[i].append(" ")
+                bob_array[i].append(" ")
+        alice_temp = []
+        bob_temp = []
+        for j in range (0,total_front_spaces):
+            alice_temp.append(" ")
+            bob_temp.append(" ")
+        for entry in alice_array[i]:
+            alice_temp.append(entry)
+        for entry in bob_array[i]:
+            bob_temp.append(entry)
+        alice_array[i] = alice_temp
+        bob_array[i] = bob_temp
+    for i in range(0,len(alice_array)):
+        alice_array[i].insert(0,"Alice")
+        bob_array[i].insert(0,"Bob")
+        alice_array[i].append(" ")
+        alice_array[i].append(" ")
+        bob_array[i].append(" ")
+        bob_array[i].append(" ")
+    return [alice_array,bob_array]
 
 def h_func(p):
     if p != 0:
@@ -162,10 +177,10 @@ def check_parity(alice_bits,bob_bits):
     return [alice_parity, bob_parity, split_arrays_array[0], split_arrays_array[1]]
 
 def show_table(alice,a_parity,bob,b_parity,error_array,no_errors,split_arrays,split_arrays2):
-    alice.insert(0,'Alice|s Key')
+    alice.insert(0,'Alice\'s Key')
     alice.append(' Parity Value')
     alice.append(a_parity)
-    bob.insert(0,'Bob|s Key')
+    bob.insert(0,'Bob\'s Key')
     bob.append(' Parity Value')
     bob.append(b_parity)
     error_array.insert(0, 'Errors')
@@ -173,26 +188,10 @@ def show_table(alice,a_parity,bob,b_parity,error_array,no_errors,split_arrays,sp
     error_array.append(no_errors)
     data = [alice,bob,error_array]
     for i in range(0,len(split_arrays)):
-        #diff = len(error_array)-len(split_arrays[i])
-        #print(diff)
-        #if diff > 0:
-        #    split_arrays[i].pop(0)
-        #    split_arrays2[i].pop(0)
-        #    for j in range(0,diff):
-        #        split_arrays[i].insert(0," ")
-        #        split_arrays2[i].insert(0," ")
-        #    split_arrays[i].insert(0,"Bob|s Key")
-        #    split_arrays2[i].insert(0,"Alice|s Key")
         if split_arrays[0] != False or split_arrays2[0] != False:
             data.append(split_arrays2[i])
             data.append(split_arrays[i])
-    for line in data:
-        print(line)
     return data
-
-#check_parity(["1","0","1"],["1","0","0"])
-#show_table(["1","0","1"],"0",["1","0","0"],"1",[" "," ","X"],"1",[['Bob', ' ', '0', ' ', ' ']],[['Alice', ' ', '1', ' ', ' ']])
-
 
 # ^This is the Shannon limit for the cascade protocol - Most ideal case - ideal percentage of bits that would need to be given up as parity bits to correct the error
 # Need to impliment a ratio (higher than 1) of the percentage of bits my cascade gives up commpared to the Shannon limit

@@ -37,4 +37,5 @@ def form():
     else:
         table_data = [cascade.string_to_array(alice_bits),cascade.string_to_array(bob_bits),error_array]
         no_parity = math.ceil(cascade.h_func(error_rate)*no_bits)
-    return render_template('form return.html',alice_bits=str(alice_bits),bob_bits=str(bob_bits),corrected_string=str(alice_bits),no_parity=no_parity,no_errors=str(no_errors),shannon_limit=cascade.h_func(error_rate),no_itterations="no_iterations",tbl=table_data,omega=omega,string_length=len(str(alice_bits)))
+    ratio_parity_shannon = (no_parity/no_bits)/cascade.h_func(error_rate)
+    return render_template('form return.html',alice_bits=str(alice_bits),bob_bits=str(bob_bits),corrected_string=str(alice_bits),no_parity=no_parity,naive_parity="<naive_parity>",optimal_parity="<optimal_parity>",no_errors=str(no_errors),shannon_limit=cascade.h_func(error_rate),ratio_shannon=ratio_parity_shannon,no_itterations="no_iterations",tbl=table_data,omega=omega,string_length=len(str(alice_bits)),no_bits=no_bits)
