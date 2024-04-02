@@ -193,5 +193,5 @@ def show_table(alice,a_parity,bob,b_parity,error_array,no_errors,split_arrays,sp
             data.append(split_arrays[i])
     return data
 
-# ^This is the Shannon limit for the cascade protocol - Most ideal case - ideal percentage of bits that would need to be given up as parity bits to correct the error
+# ^This is the Shannon limit for the cascade protocol - Most ideal case - to correct this error you need to give up this many bits per bit, to get ideal number of party bits that must be given, do this times number of bits
 # Need to impliment a ratio (higher than 1) of the percentage of bits my cascade gives up commpared to the Shannon limit
