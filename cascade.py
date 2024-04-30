@@ -1,6 +1,6 @@
+#cascade.py - preforms data processing on data received from the website (via app.py)
 import math
 import random
-import sys
 
 def string_to_array(string): # Used for user display purposes to convert each character in a string to entries in an array
     array=[]
@@ -148,7 +148,7 @@ def h_func(p):
         h = 0
     return h
 
-###################################################################################
+
 def split_into_subblocks(string,omega):
     substring_size = omega
     no_subblock = math.ceil(string / substring_size)
@@ -165,7 +165,6 @@ def split_into_subblocks(string,omega):
             subblock += 1        
         bit += 1
     return subblocks
-###################################################################################
 
 def check_parity(alice_bits,bob_bits):
     alice_parity, bob_parity = parity_sum(alice_bits), parity_sum(bob_bits) # Calculate the parity of Alice's and Bob's bits

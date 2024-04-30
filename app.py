@@ -1,3 +1,4 @@
+#app.py - hosts the error correction web server using Flask
 from flask import Flask, render_template, request
 import math
 import cascade
@@ -28,17 +29,21 @@ def form():
     error_rate = processed_data[3]
     omega = processed_data[4]
     if no_errors < 2:
+        # splits both arrays in half and gives the parity of each half for both strings (returns as a list)
         parities=cascade.check_parity(alice_bits,bob_bits)
         alice_parity = parities[0]
         bob_parity = parities[1]
         split_arrays = parities[2]
         split_arrays2 = parities[3]
+        # run the cascade algorithm and output results to a html table
         table_data = cascade.show_table(cascade.string_to_array(alice_bits),alice_parity,cascade.string_to_array(bob_bits),bob_parity,error_array,no_errors,split_arrays,split_arrays2)
-        no_parity = (len(split_arrays)*2)
+        no_parity = (len(split_arrays)*2) # Calculate the number of parity bits exposed
     else:
+        # run the cascade algorithm and output results to a html table
         table_data = [cascade.string_to_array(alice_bits),cascade.string_to_array(bob_bits),error_array]
         no_parity = math.ceil(cascade.h_func(error_rate)*no_bits)
-    ratio_parity_shannon = (no_parity/no_bits)/cascade.h_func(error_rate)
+    ratio_parity_shannon = (no_parity/no_bits)/cascade.h_func(error_rate) # calculate the ratio of parity bits to the shannon limit
+    #return the results to the user in a html table using the template 'form return.html'
     return render_template('form return.html',alice_bits=str(alice_bits),bob_bits=str(bob_bits),corrected_string=str(alice_bits),no_parity=no_parity,naive_parity="<naive_parity>",optimal_parity="<optimal_parity>",no_errors=str(no_errors),shannon_limit=cascade.h_func(error_rate),ratio_shannon=ratio_parity_shannon,no_itterations="no_iterations",tbl=table_data,omega=omega,string_length=len(str(alice_bits)),no_bits=no_bits)
 
 # API
