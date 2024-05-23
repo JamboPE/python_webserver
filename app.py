@@ -107,7 +107,7 @@ def api_cascade(api_call):
         table_data = [cascade.string_to_array(alice_bits),cascade.string_to_array(bob_bits),error_array]
         no_parity = math.ceil(cascade.h_func(error_rate)*no_bits)
     ratio_parity_shannon = (no_parity/no_bits)/cascade.h_func(error_rate)
-    return """{"status":"OK","payload":"'Corrected_Key':'"""+str(alice_bits)+"""','Key_Length':'"""+str(len(str(alice_bits)))+"""','Wrong_Parity':'"""+str(no_parity)+"""','Number_Errors':'"""+str(no_errors)+"""','Shannon_Limit':'"""+str(cascade.h_func(error_rate))+"""','Shannon_Ratio':'"""+str(ratio_parity_shannon)+"""','Cascade_Itterations':'"""+"no_iterations"+"""'"}"""
+    return """{"status":"OK","payload":"'Corrected_Key':'"""+str(alice_bits)+"""','Key_Length':'"""+str(len(str(alice_bits)))+"""','Wrong_Parity':'"""+str(no_parity)+"""','Number_Errors':'"""+str(no_errors)+"""','Shannon_Limit':'"""+str(cascade.h_func(error_rate))+"""','Shannon_Ratio':'"""+str(ratio_parity_shannon)+"""'"}"""
 
 @app.route('/api/<path:api_function>')
 def api(api_function):
